@@ -1,45 +1,49 @@
 <?php
 
-// Router jembatan untuk Vercel Serverless
-$uri = urldecode(
-    parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
-);
+$uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$uri = urldecode($uri);
 
-// Rute untuk folder admin
-if (strpos($uri, '/admin') === 0) {
-    $path = $uri;
-    if ($path === '/admin' || $path === '/admin/') {
-        $path = '/admin/dashboard.php';
-    }
+// Jika akses ke root (/)
+if ($uri === '/' || $uri === '' || $uri === '/index.php') {
+    chdir(__DIR__ . '/../public');
+    require __DIR__ . '/../public/index.php';
+    exit;
+}
+
+// Jika akses ke area admin
+if (str_starts_with($uri, '/admin')) {
+    $adminFile = realpath(__DIR__ . '/..' . $uri);
     
-    $file = __DIR__ . '/..' . $path;
-    if (!file_exists($file) && file_exists($file . '.php')) {
-        $file = $file . '.php';
+    // Jika berupa direktori, cari index.php atau dashboard.php
+    if (is_dir($adminFile)) {
+        if (file_exists($adminFile . '/dashboard.php')) {
+            $adminFile .= '/dashboard.php';
+        } elseif (file_exists($adminFile . '/index.php')) {
+            $adminFile .= '/index.php';
+        }
+    } elseif (!file_exists($adminFile) && file_exists($adminFile . '.php')) {
+        $adminFile .= '.php';
     }
-    
-    if (file_exists($file) && is_file($file)) {
-        chdir(dirname($file));
-        require $file;
+
+    if ($adminFile && file_exists($adminFile)) {
+        chdir(dirname($adminFile));
+        require $adminFile;
         exit;
     }
 }
 
-// Rute untuk folder public
-if ($uri === '/' || $uri === '') {
-    $file = __DIR__ . '/../public/index.php';
-} else {
-    $file = __DIR__ . '/../public' . $uri;
-    if (!file_exists($file) && file_exists($file . '.php')) {
-        $file = $file . '.php';
-    }
+// Cek file di folder public
+$publicFile = realpath(__DIR__ . '/../public' . $uri);
+if (!$publicFile && file_exists(__DIR__ . '/../public' . $uri . '.php')) {
+    $publicFile = realpath(__DIR__ . '/../public' . $uri . '.php');
 }
 
-if (file_exists($file) && is_file($file)) {
-    chdir(dirname($file));
-    require $file;
+if ($publicFile && file_exists($publicFile)) {
+    chdir(dirname($publicFile));
+    require $publicFile;
     exit;
 }
 
-// Fallback ke halaman utama public/index.php
+// Fallback jika tidak ditemukan
 chdir(__DIR__ . '/../public');
 require __DIR__ . '/../public/index.php';
