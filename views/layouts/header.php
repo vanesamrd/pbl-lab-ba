@@ -1,4 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/lab-ba/app/models/Settings.php';
+<?php require_once __DIR__ . '/../../app/models/Settings.php';
 $S = Settings::get();
 if (!$S) {
   $S = [
