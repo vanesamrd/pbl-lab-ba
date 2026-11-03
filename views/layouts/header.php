@@ -1,4 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/lab-ba/app/models/Settings.php';
+<?php require_once __DIR__ . '/../../app/models/Settings.php';
 $S = Settings::get();
 if (!$S) {
   $S = [
@@ -16,6 +16,10 @@ if (!$S) {
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lab Business Analytics</title>
+  <link rel="icon" type="image/png" href="/lab-ba/public/uploads/logo/Jti_polinema.svg.png">
+
+  <!-- Favicon -->
+  
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Google Fonts: Poppins, Inter, Rubik -->
@@ -92,23 +96,25 @@ $isAdmin = isset($_SESSION['admin_id']);
 $adminName = $isAdmin ? $_SESSION['admin_username'] : null;
 // Daftar menu sidebar admin (otomatis dari file di folder admin)
 $adminMenus = [
-  ['label' => 'Dashboard', 'file' => 'dashboard.php', 'icon' => 'bi-speedometer2'],
-  ['label' => 'Manajemen Admin', 'file' => 'users/manage.php', 'icon' => 'bi-person-badge'],
-  ['label' => 'Manajemen Dosen', 'file' => 'dosen/manage.php', 'icon' => 'bi-people'],
-  ['label' => 'Manajemen Galeri', 'file' => 'galeri/manage.php', 'icon' => 'bi-images'],
-  ['label' => 'Manajemen Publikasi', 'file' => 'publikasi/manage.php', 'icon' => 'bi-journal-text'],
-  ['label' => 'Manajemen Berita', 'file' => 'berita/manage.php', 'icon' => 'bi-newspaper'],
-  ['label' => 'Manajemen Kategori', 'file' => 'kategori/manage.php', 'icon' => 'bi-tags'],
-  ['label' => 'Manajemen Peminjaman', 'file' => 'peminjaman/manage.php', 'icon' => 'bi-calendar-check'],
-  ['label' => 'Kelola Jam Tidak Tersedia', 'file' => 'kelola_jam/jam-tidak-tersedia.php', 'icon' => 'bi-clock-history'],
-  ['label' => 'Manajemen Profil', 'file' => 'profil/manage.php', 'icon' => 'bi-person-lines-fill'],
-  ['label' => 'Pengaturan Website', 'file' => 'pengaturan/website.php', 'icon' => 'bi-gear'],
-  ['label' => 'Pengaturan Kontak', 'file' => 'kontak/lab.php', 'icon' => 'bi-telephone'],
+  ['label' => 'Dashboard', 'file' => 'dashboard.php', 'icon' => 'bi-speedometer2', 'desc' => 'Ringkasan aktivitas admin'],
+  ['label' => 'Manajemen Admin', 'file' => 'users/manage.php', 'icon' => 'bi-person-badge', 'desc' => 'Kelola akun admin'],
+  ['label' => 'Manajemen Dosen', 'file' => 'dosen/manage.php', 'icon' => 'bi-people', 'desc' => 'Tambah dan edit data dosen'],
+  ['label' => 'Manajemen Galeri', 'file' => 'galeri/manage.php', 'icon' => 'bi-images', 'desc' => 'Kelola foto dan dokumentasi'],
+  ['label' => 'Manajemen Publikasi', 'file' => 'publikasi/manage.php', 'icon' => 'bi-journal-text', 'desc' => 'Atur artikel publikasi'],
+  ['label' => 'Manajemen Berita', 'file' => 'berita/manage.php', 'icon' => 'bi-newspaper', 'desc' => 'Update berita terbaru'],
+  ['label' => 'Manajemen Kategori', 'file' => 'kategori/manage.php', 'icon' => 'bi-tags', 'desc' => 'Pengaturan kategori data'],
+  ['label' => 'Manajemen Peminjaman', 'file' => 'peminjaman/manage.php', 'icon' => 'bi-calendar-check', 'desc' => 'Kelola data peminjaman'],
+  ['label' => 'Kelola Jam Tidak Tersedia', 'file' => 'kelola_jam/jam-tidak-tersedia.php', 'icon' => 'bi-clock-history', 'desc' => 'Atur jam nonaktif lab'],
+  ['label' => 'Manajemen Profil', 'file' => 'profil/manage.php', 'icon' => 'bi-person-lines-fill', 'desc' => 'Edit profil laboratorium'],
+  ['label' => 'Pengaturan Website', 'file' => 'pengaturan/website.php', 'icon' => 'bi-gear', 'desc' => 'Atur tampilan website'],
+  ['label' => 'Pengaturan Kontak', 'file' => 'kontak/lab.php', 'icon' => 'bi-telephone', 'desc' => 'Kelola informasi kontak'],
 ];
+
 ?>
 
 <body class="d-flex flex-column min-vh-100">
 
+  <!-- Navbar -->
   <!-- Navbar -->
   <?php if ($isAdmin && strpos($_SERVER['PHP_SELF'], '/admin/') !== false): ?>
     <nav class="navbar navbar-expand-lg bg-primary-custom navbar-dark py-3 fixed-top shadow-sm">
@@ -160,7 +166,7 @@ $adminMenus = [
             <li class="nav-item"><a class="nav-link" href="#dosen">Dosen</a></li>
             <li class="nav-item"><a class="nav-link" href="#kontak">Kontak</a></li>
             <?php if (!$isAdmin): ?>
-              <li class="nav-item"><a class="nav-link" href="/lab-ba/public/login.php">Login</a></li>
+              <li class="nav-item"><a class="nav-link btn-login-nav" href="/lab-ba/public/login.php">Login</a></li>
             <?php else: ?>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -196,45 +202,31 @@ $adminMenus = [
     .navbar.fixed-top {
       box-shadow: 0 2px 16px 0 rgba(10, 42, 67, 0.10);
     }
+
+    .btn-login-nav {
+    padding: 0.6rem 1.8rem !important;
+    margin-left: 15px;
+    border-radius: 50px;
+    border: 2px solid transparent;
+
+    background: transparent;
+    color: var(--primary-dark) !important;
+
+    font-weight: 700;
+    letter-spacing: 0.3px;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.btn-login-nav:hover {
+    background-color: var(--primary-accent);
+    border-color: var(--primary-accent);
+    color: #ffffff !important;
+
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(63, 162, 247, 0.4);
+}
   </style>
 
-  <?php if ($isAdmin && strpos($_SERVER['PHP_SELF'], '/admin/') !== false): ?>
-    <!-- Floating Sidebar Offcanvas -->
-    <button class="btn btn-accent d-md-none position-fixed" style="top:80px;left:16px;z-index:1040;" type="button" data-bs-toggle="offcanvas" data-bs-target="#adminSidebar" aria-controls="adminSidebar">
-      <i class="bi bi-list"></i> Menu
-    </button>
-    <div class="offcanvas offcanvas-start bg-light" tabindex="-1" id="adminSidebar" aria-labelledby="adminSidebarLabel" style="width:220px;">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="adminSidebarLabel"><i class="bi bi-grid"></i> Menu Admin</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body px-2">
-        <ul class="nav flex-column">
-          <?php foreach ($adminMenus as $menu): ?>
-            <li class="nav-item mb-1">
-              <a class="nav-link d-flex align-items-center gap-2 <?php if (basename($_SERVER['PHP_SELF']) === $menu['file']) echo 'active text-accent fw-bold'; ?>" href="/lab-ba/admin/<?= $menu['file'] ?>">
-                <i class="bi <?= $menu['icon'] ?>"></i> <?= $menu['label'] ?>
-              </a>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
-    </div>
-    <!-- Desktop Sidebar -->
-    <div class="container-fluid">
-      <div class="row">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar py-4" style="min-height: 100vh;">
-          <div class="position-sticky">
-            <ul class="nav flex-column">
-              <?php foreach ($adminMenus as $menu): ?>
-                <li class="nav-item mb-1">
-                  <a class="nav-link d-flex align-items-center gap-2 <?php if (basename($_SERVER['PHP_SELF']) === $menu['file']) echo 'active text-accent fw-bold'; ?>" href="/lab-ba/admin/<?= $menu['file'] ?>">
-                    <i class="bi <?= $menu['icon'] ?>"></i> <?= $menu['label'] ?>
-                  </a>
-                </li>
-              <?php endforeach; ?>
-            </ul>
-          </div>
-        </nav>
-        <main class="col-md-10 ms-sm-auto px-4 py-4">
-        <?php endif; ?>
+  

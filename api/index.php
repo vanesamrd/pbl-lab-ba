@@ -3,8 +3,15 @@
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $uri = urldecode($uri);
 
+// Normalisasi jika request mengandung awalan /lab-ba atau /lab-ba/public
+if (str_starts_with($uri, '/lab-ba/public')) {
+    $uri = substr($uri, strlen('/lab-ba/public'));
+} elseif (str_starts_with($uri, '/lab-ba')) {
+    $uri = substr($uri, strlen('/lab-ba'));
+}
+
 // Jika akses ke root (/)
-if ($uri === '/' || $uri === '' || $uri === '/index.php') {
+if ($uri === '' || $uri === '/' || $uri === '/index.php') {
     chdir(__DIR__ . '/../public');
     require __DIR__ . '/../public/index.php';
     exit;
